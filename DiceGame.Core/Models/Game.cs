@@ -1,6 +1,6 @@
 namespace DiceGame.Core.Models;
 
-// Korzeń agregatu — mutowalny stan rozgrywki hot-seat
+// Główna klasa zarządzająca stanem gry i zmianą tur graczy
 public class Game
 {
     private readonly List<Player> _players;
