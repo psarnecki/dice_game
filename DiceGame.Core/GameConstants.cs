@@ -11,9 +11,9 @@ public static class GameConstants
     public const int DieMaxValue = 6;
     public const int UpperBonusThreshold = 63;
     public const int UpperBonusPoints = 35;
-    public const int FullHousePoints = 25;
+    public const int FullPoints = 25;
     public const int SmallStraightPoints = 30;
     public const int LargeStraightPoints = 40;
-    public const int KrolPoints = 50;
+    public const int YahtzeePoints = 50;
     public const int TotalCategories = 13;
 }

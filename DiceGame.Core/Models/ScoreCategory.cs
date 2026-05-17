@@ -10,9 +10,9 @@ public enum ScoreCategory
     Sixes,
     ThreeOfAKind,
     FourOfAKind,
-    FullHouse,
+    Full,
     SmallStraight,
     LargeStraight,
-    Krol,
-    Szansa
+    Yahtzee,
+    Chance
 }
