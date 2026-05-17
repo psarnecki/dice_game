@@ -7,4 +7,11 @@ public record RollResult(
     string? Error,
     IReadOnlyList<Die> Dice,
     int RollsUsed,
-    int RollsRemaining);
+    int RollsRemaining)
+{
+    public static RollResult Ok(IReadOnlyList<Die> dice, int rollsUsed, int rollsRemaining)
+        => new(true, null, dice, rollsUsed, rollsRemaining);
+
+    public static RollResult Fail(string error)
+        => new(false, error, Array.Empty<Die>(), 0, 0);
+}
