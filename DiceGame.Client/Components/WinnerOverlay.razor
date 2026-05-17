@@ -1,0 +1,48 @@
+@code {
+    [Parameter, EditorRequired] public Player Winner { get; set; } = default!;
+    [Parameter, EditorRequired] public IReadOnlyList<Player> Players { get; set; } = Array.Empty<Player>();
+    [Parameter] public EventCallback OnNewGame { get; set; }
+
+    private async Task HandleNewGameClick() => await OnNewGame.InvokeAsync();
+
+    private IEnumerable<Player> Ranked =>
+        Players.OrderByDescending(p => p.Card.GrandTotal);
+}
+
+<div class="winner-overlay">
+    <div class="winner-modal">
+        <h2>Koniec gry</h2>
+
+        <div class="winner-banner">
+            <div class="winner-label">Zwycięzca</div>
+            <div class="winner-name">@Winner.Name</div>
+            <div class="winner-score">@Winner.Card.GrandTotal pkt</div>
+        </div>
+
+        <table class="standings">
+            <thead>
+                <tr>
+                    <th class="rank">#</th>
+                    <th>Gracz</th>
+                    <th class="score">Wynik</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ var position = 1; }
+                @foreach (var player in Ranked)
+                {
+                    <tr class="@(player == Winner ? "winner-row" : "")">
+                        <td class="rank">@position</td>
+                        <td>@player.Name</td>
+                        <td class="score">@player.Card.GrandTotal</td>
+                    </tr>
+                    position++;
+                }
+            </tbody>
+        </table>
+
+        <button type="button" class="new-game-btn" @onclick="HandleNewGameClick">
+            Nowa gra
+        </button>
+    </div>
+</div>

@@ -1,0 +1,104 @@
+@code {
+    [Parameter, EditorRequired] public Player Player { get; set; } = default!;
+    [Parameter] public IReadOnlyDictionary<ScoreCategory, int>? PossibleScores { get; set; }
+    [Parameter] public bool CanScore { get; set; }
+    [Parameter] public EventCallback<ScoreCategory> OnSelect { get; set; }
+
+    private static readonly ScoreCategory[] UpperCategories =
+    {
+        ScoreCategory.Ones, ScoreCategory.Twos, ScoreCategory.Threes,
+        ScoreCategory.Fours, ScoreCategory.Fives, ScoreCategory.Sixes
+    };
+
+    private static readonly ScoreCategory[] LowerCategories =
+    {
+        ScoreCategory.ThreeOfAKind, ScoreCategory.FourOfAKind, ScoreCategory.Full,
+        ScoreCategory.SmallStraight, ScoreCategory.LargeStraight,
+        ScoreCategory.Yahtzee, ScoreCategory.Chance
+    };
+
+    private async Task HandleSelect(ScoreCategory category)
+    {
+        if (!CanScore || Player.Card.IsCategoryUsed(category)) return;
+        await OnSelect.InvokeAsync(category);
+    }
+
+    private int Potential(ScoreCategory c) => PossibleScores?.GetValueOrDefault(c, 0) ?? 0;
+}
+
+<div class="scorecard">
+    <h3>Karta wyników: <span class="player">@Player.Name</span></h3>
+
+    <table>
+        <tbody>
+            <tr class="section-header">
+                <td colspan="2">Górna sekcja</td>
+            </tr>
+            @foreach (var category in UpperCategories)
+            {
+                @RenderRow(category)
+            }
+            <tr class="subtotal">
+                <td>Suma górnej sekcji</td>
+                <td>@Player.Card.UpperSectionTotal</td>
+            </tr>
+            <tr class="bonus-row @(Player.Card.HasUpperBonus ? "earned" : "")">
+                <td>Bonus (≥@GameConstants.UpperBonusThreshold pkt)</td>
+                <td>
+                    @if (Player.Card.HasUpperBonus)
+                    {
+                        <span>+@GameConstants.UpperBonusPoints</span>
+                    }
+                    else
+                    {
+                        <span class="bonus-progress">
+                            brakuje @(GameConstants.UpperBonusThreshold - Player.Card.UpperSectionTotal)
+                        </span>
+                    }
+                </td>
+            </tr>
+
+            <tr class="section-header">
+                <td colspan="2">Dolna sekcja</td>
+            </tr>
+            @foreach (var category in LowerCategories)
+            {
+                @RenderRow(category)
+            }
+            <tr class="subtotal">
+                <td>Suma dolnej sekcji</td>
+                <td>@Player.Card.LowerSectionTotal</td>
+            </tr>
+
+            <tr class="grand-total">
+                <td>Wynik całkowity</td>
+                <td>@Player.Card.GrandTotal</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+@{
+    RenderFragment RenderRow(ScoreCategory category) => __builder =>
+    {
+        var used = Player.Card.IsCategoryUsed(category);
+        var potential = !used ? Potential(category) : 0;
+        var clickable = CanScore && !used;
+        var highlight = clickable && potential > 0;
+
+        <tr class="@(clickable ? "clickable" : "") @(highlight ? "highlight" : "") @(used ? "used" : "")"
+            @onclick="() => HandleSelect(category)">
+            <td>@ScoreCategoryLabels.Display(category)</td>
+            <td>
+                @if (used)
+                {
+                    <span class="recorded">@Player.Card.Scores[category]</span>
+                }
+                else if (PossibleScores != null)
+                {
+                    <span class="potential">@potential</span>
+                }
+            </td>
+        </tr>;
+    };
+}

@@ -1,0 +1,103 @@
+.scorecard {
+    width: 100%;
+}
+
+.scorecard h3 {
+    margin: 0 0 1rem;
+    font-size: 1.1rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.scorecard h3 .player {
+    color: #1a1a2e;
+    font-weight: 700;
+}
+
+.scorecard table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.scorecard tr {
+    border-bottom: 1px solid #f1f3f5;
+}
+
+.scorecard td {
+    padding: 0.5rem 0.75rem;
+}
+
+.scorecard td:last-child {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    width: 6rem;
+}
+
+.scorecard .section-header td {
+    font-weight: 700;
+    background: #f8f9fa;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    color: #6c757d;
+    padding: 0.5rem 0.75rem;
+}
+
+.scorecard tr.clickable {
+    cursor: pointer;
+    transition: background-color 100ms;
+}
+
+.scorecard tr.clickable:hover {
+    background: #e7f5ff;
+}
+
+.scorecard tr.highlight {
+    background: #fff3cd;
+}
+
+.scorecard tr.highlight:hover {
+    background: #ffe8a1;
+}
+
+.scorecard tr.used {
+    color: #adb5bd;
+}
+
+.scorecard tr.used .recorded {
+    font-weight: 600;
+    color: #495057;
+}
+
+.scorecard .potential {
+    color: #1971c2;
+    font-weight: 600;
+}
+
+.scorecard .subtotal {
+    font-weight: 600;
+    background: #f8f9fa;
+}
+
+.scorecard .bonus-row.earned {
+    color: #2f9e44;
+    font-weight: 700;
+}
+
+.scorecard .bonus-row .bonus-progress {
+    font-size: 0.85rem;
+    color: #6c757d;
+    font-weight: normal;
+}
+
+.scorecard .grand-total {
+    font-size: 1.1rem;
+    font-weight: 700;
+    background: #1a1a2e;
+    color: #fff;
+}
+
+.scorecard .grand-total td {
+    padding: 0.75rem;
+}

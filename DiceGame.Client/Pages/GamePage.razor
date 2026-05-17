@@ -1,0 +1,160 @@
+@page "/game"
+@inject GameStateService GameState
+@inject NavigationManager Navigation
+@implements IDisposable
+
+<PageTitle>Kości — Gra</PageTitle>
+
+@if (_state.Phase == TurnPhase.NotStarted)
+{
+    <div class="redirect-info">Brak aktywnej gry — przekierowuję...</div>
+}
+else
+{
+    <div class="game-page">
+        <div class="game-container">
+            <header class="game-header">
+                <div class="current-turn">
+                    <span class="turn-label">Tura</span>
+                    <span class="player-name">@_state.Players[_state.CurrentPlayerIndex].Name</span>
+                </div>
+                <div class="roll-info">
+                    Rzut @_state.RollsUsed z @GameConstants.MaxRollsPerTurn
+                </div>
+            </header>
+
+            <div class="game-body">
+                <section class="play-area">
+                    <DiceRow Dice="@_state.Dice"
+                             CanInteract="@(_state.Phase == TurnPhase.Rolling)"
+                             IsRolling="@_isRolling"
+                             OnToggleHold="HandleToggleHold" />
+
+                    <button type="button"
+                            class="roll-button"
+                            disabled="@(!CanRoll)"
+                            @onclick="HandleRoll">
+                        @(CanRoll ? "Rzuć" : "Wybierz kategorię")
+                    </button>
+
+                    @if (!string.IsNullOrEmpty(_error))
+                    {
+                        <p class="action-error">@_error</p>
+                    }
+                </section>
+
+                <section class="card-area">
+                    <ScoreCard Player="@_state.Players[_state.CurrentPlayerIndex]"
+                               PossibleScores="@_possibleScores"
+                               CanScore="@CanScoreNow"
+                               OnSelect="HandleSelectCategory" />
+                </section>
+            </div>
+
+            <footer class="game-footer">
+                <PlayerScoreboard Players="@_state.Players"
+                                  CurrentPlayerIndex="@_state.CurrentPlayerIndex" />
+            </footer>
+        </div>
+
+        @if (_state.Phase == TurnPhase.GameOver && _state.Winner is not null)
+        {
+            <WinnerOverlay Winner="@_state.Winner"
+                           Players="@_state.Players"
+                           OnNewGame="HandleNewGame" />
+        }
+    </div>
+}
+
+@code {
+    private GameState _state = default!;
+    private IReadOnlyDictionary<ScoreCategory, int>? _possibleScores;
+    private bool _isRolling;
+    private string? _error;
+
+    private bool CanRoll =>
+        _state.Phase == TurnPhase.Rolling
+        && _state.RollsUsed < GameConstants.MaxRollsPerTurn;
+
+    private bool CanScoreNow =>
+        _state.Phase is TurnPhase.Rolling or TurnPhase.AwaitingScore;
+
+    protected override void OnInitialized()
+    {
+        _state = GameState.State;
+
+        if (_state.Phase == TurnPhase.NotStarted)
+        {
+            Navigation.NavigateTo("/");
+            return;
+        }
+
+        RefreshPossibleScores();
+        GameState.StateChanged += OnStateChanged;
+    }
+
+    private void OnStateChanged()
+    {
+        _state = GameState.State;
+        RefreshPossibleScores();
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void RefreshPossibleScores()
+    {
+        _possibleScores = _state.Phase == TurnPhase.GameOver
+            ? null
+            : GameState.GetPossibleScores();
+    }
+
+    private void HandleToggleHold(int dieIndex)
+    {
+        var result = GameState.ToggleHold(dieIndex);
+        _error = result.Success ? null : result.Error;
+    }
+
+    private async Task HandleRoll()
+    {
+        var result = GameState.RollDice();
+        if (!result.Success)
+        {
+            _error = result.Error;
+            return;
+        }
+
+        _error = null;
+        await PlayShakeAnimation();
+    }
+
+    private async Task HandleSelectCategory(ScoreCategory category)
+    {
+        var result = GameState.SelectCategory(category);
+        if (!result.Success)
+        {
+            _error = result.Error;
+            return;
+        }
+
+        _error = null;
+
+        // Po SelectCategory silnik automatycznie rzuca dla nowego gracza — animujemy ten rzut
+        if (_state.Phase != TurnPhase.GameOver)
+            await PlayShakeAnimation();
+    }
+
+    private async Task PlayShakeAnimation()
+    {
+        _isRolling = true;
+        StateHasChanged();
+        await Task.Delay(500);
+        _isRolling = false;
+        StateHasChanged();
+    }
+
+    private void HandleNewGame() => Navigation.NavigateTo("/");
+
+    public void Dispose()
+    {
+        GameState.StateChanged -= OnStateChanged;
+    }
+}

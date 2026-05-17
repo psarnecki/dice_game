@@ -1,0 +1,87 @@
+@page "/"
+@inject GameStateService GameState
+@inject NavigationManager Navigation
+
+<PageTitle>Kości — Nowa gra</PageTitle>
+
+<div class="setup-container">
+    <div class="setup-card">
+        <h1>Kości</h1>
+        <p class="subtitle">Hot-seat dla 2–4 graczy</p>
+
+        <div class="player-count">
+            <label>Liczba graczy</label>
+            <div class="count-buttons">
+                @for (var n = GameConstants.MinPlayers; n <= GameConstants.MaxPlayers; n++)
+                {
+                    var count = n;
+                    <button type="button"
+                            class="@(count == _playerCount ? "selected" : "")"
+                            @onclick="() => SetPlayerCount(count)">
+                        @count
+                    </button>
+                }
+            </div>
+        </div>
+
+        <div class="player-inputs">
+            @for (var i = 0; i < _playerCount; i++)
+            {
+                var index = i;
+                <input type="text"
+                       placeholder="@($"Imię gracza {index + 1}")"
+                       maxlength="20"
+                       @bind="_names[index]"
+                       @bind:event="oninput" />
+            }
+        </div>
+
+        @if (!string.IsNullOrEmpty(_error))
+        {
+            <p class="error-message">@_error</p>
+        }
+
+        <button type="button"
+                class="start-button"
+                disabled="@(!CanStart)"
+                @onclick="OnStartClicked">
+            Rozpocznij grę
+        </button>
+    </div>
+</div>
+
+@code {
+    private int _playerCount = GameConstants.MinPlayers;
+    private readonly string[] _names = new string[GameConstants.MaxPlayers];
+    private string? _error;
+
+    private bool CanStart =>
+        _names.Take(_playerCount).All(n => !string.IsNullOrWhiteSpace(n));
+
+    protected override void OnInitialized()
+    {
+        for (var i = 0; i < _names.Length; i++)
+            _names[i] = string.Empty;
+    }
+
+    private void SetPlayerCount(int count)
+    {
+        _playerCount = count;
+        _error = null;
+    }
+
+    private void OnStartClicked()
+    {
+        var names = _names.Take(_playerCount).ToList();
+        var result = GameState.StartGame(names);
+
+        if (result.Success)
+        {
+            Navigation.NavigateTo("/game");
+        }
+        else
+        {
+            _error = result.Error;
+        }
+    }
+}

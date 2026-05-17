@@ -1,0 +1,123 @@
+.setup-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+
+.setup-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 3rem 2.5rem;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.setup-card h1 {
+    font-size: 2.5rem;
+    margin: 0;
+    text-align: center;
+    color: #1a1a2e;
+    letter-spacing: -0.02em;
+}
+
+.subtitle {
+    text-align: center;
+    color: #6c757d;
+    margin: 0.5rem 0 2rem;
+    font-size: 0.95rem;
+}
+
+.player-count {
+    margin-bottom: 1.5rem;
+}
+
+.player-count label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #495057;
+    font-size: 0.9rem;
+}
+
+.count-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.count-buttons button {
+    flex: 1;
+    padding: 0.75rem;
+    background: #f1f3f5;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 150ms, border-color 150ms, color 150ms;
+}
+
+.count-buttons button:hover {
+    background: #e9ecef;
+}
+
+.count-buttons button.selected {
+    background: #1a1a2e;
+    color: #fff;
+    border-color: #1a1a2e;
+}
+
+.player-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.player-inputs input {
+    padding: 0.75rem 1rem;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 150ms;
+}
+
+.player-inputs input:focus {
+    outline: none;
+    border-color: #1a1a2e;
+}
+
+.error-message {
+    color: #842029;
+    font-size: 0.9rem;
+    margin: 0 0 1rem;
+    padding: 0.75rem 1rem;
+    background: #f8d7da;
+    border-radius: 8px;
+}
+
+.start-button {
+    width: 100%;
+    padding: 1rem;
+    background: #1a1a2e;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 150ms, transform 150ms;
+}
+
+.start-button:hover:not(:disabled) {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.start-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
