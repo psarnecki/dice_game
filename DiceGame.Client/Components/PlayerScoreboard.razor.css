@@ -1,0 +1,40 @@
+.scoreboard {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.player-tile {
+    flex: 1;
+    min-width: 140px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 2px solid transparent;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    transition: border-color 200ms, background-color 200ms;
+}
+
+.player-tile.current {
+    background: rgba(255, 193, 7, 0.15);
+    border-color: #ffc107;
+}
+
+.player-tile .name {
+    font-size: 0.85rem;
+    color: #adb5bd;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem;
+}
+
+.player-tile.current .name {
+    color: #ffc107;
+}
+
+.player-tile .score {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+}

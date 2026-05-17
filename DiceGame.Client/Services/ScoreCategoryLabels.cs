@@ -13,12 +13,12 @@ public static class ScoreCategoryLabels
         [ScoreCategory.Fours] = "Czwórki",
         [ScoreCategory.Fives] = "Piątki",
         [ScoreCategory.Sixes] = "Szóstki",
-        [ScoreCategory.ThreeOfAKind] = "Trójka",
-        [ScoreCategory.FourOfAKind] = "Kareta",
+        [ScoreCategory.ThreeOfAKind] = "3 Jednakowe",
+        [ScoreCategory.FourOfAKind] = "4 Jednakowe",
         [ScoreCategory.Full] = "Full",
         [ScoreCategory.SmallStraight] = "Mały Strit",
         [ScoreCategory.LargeStraight] = "Duży Strit",
-        [ScoreCategory.Yahtzee] = "Generał",
+        [ScoreCategory.Yahtzee] = "Król",
         [ScoreCategory.Chance] = "Szansa"
     };
 

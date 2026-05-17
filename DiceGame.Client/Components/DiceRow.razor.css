@@ -1,0 +1,51 @@
+.dice-row {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.die {
+    font-size: 5rem;
+    line-height: 1;
+    background: #fff;
+    border: 3px solid #dee2e6;
+    border-radius: 16px;
+    width: 6rem;
+    height: 6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #1a1a2e;
+    padding: 0;
+    transition: transform 150ms, border-color 150ms, background-color 150ms, box-shadow 150ms;
+    user-select: none;
+}
+
+.die:hover:not(:disabled):not(.held) {
+    transform: translateY(-2px);
+    border-color: #1a1a2e;
+}
+
+.die.held {
+    background: #fff3cd;
+    border-color: #ffc107;
+    box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.25);
+}
+
+.die:disabled {
+    cursor: not-allowed;
+}
+
+.dice-row.rolling .die:not(.held) {
+    animation: shake 500ms ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0) rotate(0deg); }
+    20% { transform: translateX(-8px) rotate(-8deg); }
+    40% { transform: translateX(8px) rotate(8deg); }
+    60% { transform: translateX(-6px) rotate(-5deg); }
+    80% { transform: translateX(6px) rotate(5deg); }
+}

@@ -1,0 +1,16 @@
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<Player> Players { get; set; } = Array.Empty<Player>();
+    [Parameter] public int CurrentPlayerIndex { get; set; }
+}
+
+<div class="scoreboard">
+    @for (var i = 0; i < Players.Count; i++)
+    {
+        var p = Players[i];
+        var isCurrent = i == CurrentPlayerIndex;
+        <div class="player-tile @(isCurrent ? "current" : "")">
+            <div class="name">@p.Name</div>
+            <div class="score">@p.Card.GrandTotal</div>
+        </div>
+    }
+</div>
