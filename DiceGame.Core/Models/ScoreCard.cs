@@ -3,19 +3,44 @@ namespace DiceGame.Core.Models;
 // Karta wyników gracza — zapisane kategorie i punktacja sekcji
 public class ScoreCard
 {
-    public IReadOnlyDictionary<ScoreCategory, int> Scores => throw new NotImplementedException();
+    private static readonly IReadOnlySet<ScoreCategory> UpperSectionCategories = new HashSet<ScoreCategory>
+    {
+        ScoreCategory.Ones,
+        ScoreCategory.Twos,
+        ScoreCategory.Threes,
+        ScoreCategory.Fours,
+        ScoreCategory.Fives,
+        ScoreCategory.Sixes
+    };
 
-    public bool IsCategoryUsed(ScoreCategory category) => throw new NotImplementedException();
+    private readonly Dictionary<ScoreCategory, int> _scores = new();
 
-    public void RecordScore(ScoreCategory category, int points) => throw new NotImplementedException();
+    public IReadOnlyDictionary<ScoreCategory, int> Scores => _scores;
 
-    public int UpperSectionTotal => throw new NotImplementedException();
+    public bool IsCategoryUsed(ScoreCategory category) => _scores.ContainsKey(category);
 
-    public int LowerSectionTotal => throw new NotImplementedException();
+    public void RecordScore(ScoreCategory category, int points)
+    {
+        if (_scores.ContainsKey(category))
+            throw new InvalidOperationException($"Category {category} already scored");
+        if (points < 0)
+            throw new ArgumentOutOfRangeException(nameof(points));
 
-    public bool HasUpperBonus => throw new NotImplementedException();
+        _scores[category] = points;
+    }
 
-    public int GrandTotal => throw new NotImplementedException();
+    public int UpperSectionTotal
+        => _scores.Where(kv => UpperSectionCategories.Contains(kv.Key)).Sum(kv => kv.Value);
 
-    public bool IsComplete => throw new NotImplementedException();
+    public int LowerSectionTotal
+        => _scores.Where(kv => !UpperSectionCategories.Contains(kv.Key)).Sum(kv => kv.Value);
+
+    public bool HasUpperBonus => UpperSectionTotal >= GameConstants.UpperBonusThreshold;
+
+    public int GrandTotal
+        => UpperSectionTotal
+           + (HasUpperBonus ? GameConstants.UpperBonusPoints : 0)
+           + LowerSectionTotal;
+
+    public bool IsComplete => _scores.Count == GameConstants.TotalCategories;
 }
